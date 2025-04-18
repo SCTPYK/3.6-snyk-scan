@@ -8,7 +8,13 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.7.0"
+    }
   }
+
+  required_version = ">= 1.3.0" # or whatever version you're using
 }
 
 
@@ -41,10 +47,10 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "hello_world" {
-  function_name = "hello_world_lambda"
-  role          = aws_iam_role.lambda_execution_role.arn
-  handler       = "hello.lambda_handler"
-  runtime       = "python3.12"
-  filename      = data.archive_file.lambda_zip.output_path
+  function_name    = "hello_world_lambda"
+  role             = aws_iam_role.lambda_execution_role.arn
+  handler          = "hello.lambda_handler"
+  runtime          = "python3.12"
+  filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 }
